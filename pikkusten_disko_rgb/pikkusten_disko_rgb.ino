@@ -1,11 +1,12 @@
 #include <EEPROM.h>
+#include <DmxSimple.h>
 
 #include <Adafruit_NeoPixel.h>
 
-#define PIN 22
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
+#define PIN 52
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(44, PIN, NEO_GRB + NEO_KHZ800);
 
-int transPins[4] = { 3, 4, 2, 5 };
+int transPins[4] = { 10, 11, 12, 13 };
 int dmxBeginChannel = 10;
 
 int myId = 2;
@@ -26,12 +27,19 @@ void setup() {
   strip.show(); // Initialize all pixels to 'off'
   
   dmxBeginChannel = EEPROM.read(1);
-  for(int i = 0; i <= 10; i++) {
+  for(int i = 4; i <= 10; i++) {
     pinMode(i+2, OUTPUT);
   }
   //Tell to serial monitor what channels etc. you are using
-  Serial.begin(9600);
+  Serial.begin(115200);
   printInfoToSerial();
+  
+  DmxSimple.usePin(4);
+  DmxSimple.maxChannel(128);
+  
+  // Set shield to output mode
+  pinMode (2, OUTPUT);
+  digitalWrite (2, HIGH);
 }
 void loop() {
    int c;
@@ -43,6 +51,7 @@ void loop() {
   } else {
     if (c=='c') channel = value;
     else if (c=='w') {
+      DmxSimple.write(channel, value);
       if(channel-dmxBeginChannel <= sizeof(transPins)/sizeof(int)-1 && channel-dmxBeginChannel >= 0) {
         analogWrite(transPins[channel-dmxBeginChannel], value);
       }

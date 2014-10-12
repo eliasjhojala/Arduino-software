@@ -1,26 +1,31 @@
-#include <Conceptinetics.h> 
+#include <DmxSimple.h>
 
-#define DMX_MASTER_CHANNELS 100 
+// After installing, switch to Serial Monitor and set the baud rate to 9600.
+//
+// Type commands in the box and hit 'Send'.
+//
+// <number>c : Select a DMX channel
+// <number>v : Set DMX channel to new value
 
-#define RXEN_PIN 2 
-
-DMX_Master dmx_master ( DMX_MASTER_CHANNELS, RXEN_PIN ); 
-
-void setup() { 
-  dmx_master.enable(); 
-  
+void setup() {
   Serial.begin(9600);
   Serial.println("SerialToDmx ready");
   Serial.println();
   Serial.println("Syntax:");
   Serial.println(" 123c : use DMX channel 123");
   Serial.println(" 45w  : set current channel to value 45");
-} 
+  DmxSimple.usePin(4);
+  DmxSimple.maxChannel(128);
+  
+  // Set shield to output mode
+  pinMode (2, OUTPUT);
+  digitalWrite (2, HIGH);
+}
 
 int value = 0;
 int channel;
 
-void loop() {  
+void loop() {
   int c;
 
   while(!Serial.available());
@@ -30,9 +35,9 @@ void loop() {
   } else {
     if (c=='c') channel = value;
     else if (c=='w') {
-      dmx_master.setChannelValue (channel, value ); 
+      DmxSimple.write(channel, value);
       Serial.println();
     }
     value = 0;
   }
-} 
+}
