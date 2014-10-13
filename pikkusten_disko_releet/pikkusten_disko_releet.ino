@@ -9,7 +9,7 @@ Servo tiltServo;
 #define PIN 12
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(44, PIN, NEO_GRB + NEO_KHZ800);
 
-int relePins[10] = { 2, 3, A0, A1, A2, A3, A5, A5, A6, A7 };
+int relePins[10] = { 2, 3, A0, A1, A2, A3, A5, A5, A6, 10 };
 int dmxBeginChannel = 10;
 
 int mekRelePins[3] = { 5, 6, 7 };
